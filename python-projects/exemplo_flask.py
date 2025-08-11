@@ -14,8 +14,8 @@ app = Flask(__name__)
 # Configurações do banco de dados
 DB_CONFIG = {
     'host': 'mysql',
-    'user': 'dev_user',
-    'password': 'dev_pass',
+    'user': 'root',
+    'password': 'root',
     'database': 'desenvolvimento',
     'charset': 'utf8mb4'
 }

@@ -2,8 +2,6 @@
 # PERFIL POWERSHELL - AMBIENTE DOCKER
 # ========================================
 
-Write-Host "🐳 Carregando aliases Docker..." -ForegroundColor Cyan
-
 # Função para verificar se os containers estão rodando
 function Test-DockerContainers {
     $containers = docker ps --format "table {{.Names}}" | Select-String -Pattern "dev_"
@@ -23,7 +21,8 @@ function python {
     
     if ($args.Count -eq 0) {
         docker exec -it dev_python python
-    } else {
+    }
+    else {
         docker exec -it dev_python python @args
     }
 }
@@ -59,7 +58,8 @@ function node {
     
     if ($args.Count -eq 0) {
         docker exec -it dev_node node
-    } else {
+    }
+    else {
         docker exec -it dev_node node @args
     }
 }
@@ -97,7 +97,8 @@ function php {
     
     if ($args.Count -eq 0) {
         docker exec -it dev_web php
-    } else {
+    }
+    else {
         docker exec -it dev_web php @args
     }
 }
@@ -163,7 +164,8 @@ function docker-logs {
     param([string]$service)
     if ($service) {
         docker-compose logs -f $service
-    } else {
+    }
+    else {
         Write-Host "Uso: docker-logs <serviço>" -ForegroundColor Yellow
         Write-Host "Serviços disponíveis: web, mysql, python, node, redis, phpmyadmin, mailhog" -ForegroundColor Green
     }
@@ -185,16 +187,6 @@ function docker-shell {
 }
 
 # ========================================
-# MENSAGEM DE BOAS-VINDAS
+# ALIASES CARREGADOS
 # ========================================
-
-Write-Host ""
-Write-Host "✅ Aliases Docker carregados com sucesso!" -ForegroundColor Green
-Write-Host "📝 Comandos disponíveis:" -ForegroundColor White
-Write-Host "   • python, pip, python3, pip3" -ForegroundColor Yellow
-Write-Host "   • node, npm, npx" -ForegroundColor Yellow  
-Write-Host "   • php, composer" -ForegroundColor Yellow
-Write-Host "   • mysql, mysqldump" -ForegroundColor Yellow
-Write-Host "   • redis-cli" -ForegroundColor Yellow
-Write-Host "   • docker-status, docker-logs, docker-shell" -ForegroundColor Yellow
-Write-Host ""
+# Para ver comandos disponíveis, execute: Get-Command *docker* | Select-Object Name

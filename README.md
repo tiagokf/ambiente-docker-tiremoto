@@ -19,11 +19,18 @@ Ambiente completo de desenvolvimento com PHP, MySQL, Python, Node.js, Redis e ou
 
 ## 🛠️ Instalação e Uso
 
-### 1. Clonar ou baixar o projeto
+### 1. Clonar o projeto
 
 ```bash
-git clone <url-do-repositorio>
-cd ambientedocker
+git clone git@github.com:tiagokf/ambiente-docker-tiremoto.git
+cd ambiente-docker-tiremoto
+```
+
+**OU via HTTPS:**
+
+```bash
+git clone https://github.com/tiagokf/ambiente-docker-tiremoto.git
+cd ambiente-docker-tiremoto
 ```
 
 ### 2. Configurar aliases PowerShell (Windows - Recomendado)
@@ -31,12 +38,14 @@ cd ambientedocker
 Para usar comandos como `python`, `node`, `php` diretamente no terminal:
 
 ```powershell
-# Carregar aliases para a sessão atual
+# Carregar aliases para a sessão atual (temporário)
 . .\Docker-Aliases.ps1
 
-# OU instalar permanentemente no perfil PowerShell
+# OU instalar permanentemente no perfil PowerShell (recomendado)
 Copy-Item "Docker-Aliases.ps1" $PROFILE -Force
 ```
+
+> **Nota**: Os aliases são carregados silenciosamente. Para ver comandos disponíveis: `Get-Command *docker*`
 
 ### 3. Subir os containers
 
@@ -78,14 +87,9 @@ docker-compose ps
 
 - **Host:** mysql (dentro do Docker) / localhost (externo)
 - **Porta:** 3306
-- **Usuário:** dev_user
-- **Senha:** dev_pass
-- **Banco:** desenvolvimento
-
-### Credenciais Root
-
 - **Usuário:** root
-- **Senha:** root123
+- **Senha:** root
+- **Banco:** desenvolvimento
 
 ## 🐍 Python
 
@@ -166,7 +170,7 @@ php --version             # PHP 8.2.29
 composer install         # Instala dependências
 
 # Banco de dados
-mysql -u dev_user -p      # Conecta ao MySQL
+mysql -u root -p          # Conecta ao MySQL
 redis-cli                 # Conecta ao Redis
 
 # Utilitários
@@ -200,7 +204,7 @@ docker-compose exec node sh
 
 ```bash
 # Acessar MySQL
-docker-compose exec mysql mysql -u dev_user -p
+docker-compose exec mysql mysql -u root -proot
 
 # Acessar Redis
 docker-compose exec redis redis-cli
@@ -249,15 +253,15 @@ Após carregar o `Docker-Aliases.ps1`, você pode trabalhar como se as ferrament
 # 1. Subir o ambiente
 docker-compose up -d
 
-# 2. Carregar aliases (uma vez por sessão)
+# 2. Carregar aliases (se não estiver no perfil)
 . .\Docker-Aliases.ps1
 
-# 3. Usar normalmente
-python --version
-node --version
-php --version
+# 3. Verificar se aliases estão funcionando
+python --version    # Deve mostrar: Python 3.11.13
+node --version      # Deve mostrar: v18.20.8
+php --version       # Deve mostrar: PHP 8.2.29
 
-# 4. Desenvolver
+# 4. Desenvolver normalmente
 cd python-projects
 python exemplo_flask.py
 

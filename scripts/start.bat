@@ -77,8 +77,8 @@ echo  Frontend Node.js:   http://localhost:3000
 echo  MailHog:           http://localhost:8025
 echo.
 echo Credenciais MySQL:
-echo  Usuario: dev_user
-echo  Senha:   dev_pass
+echo  Usuario: root
+echo  Senha:   root
 echo  Banco:   desenvolvimento
 echo.
 echo Comandos uteis:

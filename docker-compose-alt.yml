@@ -1,0 +1,125 @@
+# Versão alternativa com portas diferentes (caso a porta 80 esteja ocupada)
+version: '3.8'
+
+services:
+  # Servidor Web com PHP e Apache
+  web:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: dev_web
+    ports:
+      - "8000:80"  # Mudança: porta 8000 em vez de 80
+      - "8443:443"
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/php/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/apache/sites-available:/etc/apache2/sites-available
+      - ./logs/apache:/var/log/apache2
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - dev-network
+
+  # Banco de Dados MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: dev_mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: desenvolvimento
+      MYSQL_USER: dev_user
+      MYSQL_PASSWORD: dev_pass
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./logs/mysql:/var/log/mysql
+    networks:
+      - dev-network
+
+  # phpMyAdmin para gerenciar MySQL
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: dev_phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: root123
+      UPLOAD_LIMIT: 1G
+    depends_on:
+      - mysql
+    networks:
+      - dev-network
+
+  # Redis para Cache
+  redis:
+    image: redis:7-alpine
+    container_name: dev_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - dev-network
+
+  # Python para desenvolvimento
+  python:
+    build:
+      context: ./docker/python
+      dockerfile: Dockerfile
+    container_name: dev_python
+    ports:
+      - "5000:5000"
+      - "8888:8888"  # Jupyter
+    volumes:
+      - ./python-projects:/app
+      - ./logs/python:/var/log/python
+    working_dir: /app
+    command: tail -f /dev/null
+    networks:
+      - dev-network
+
+  # Node.js para desenvolvimento frontend
+  node:
+    image: node:18-alpine
+    container_name: dev_node
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - node_modules:/app/node_modules
+    working_dir: /app
+    command: tail -f /dev/null
+    networks:
+      - dev-network
+
+  # Mailhog para testes de email
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: dev_mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - dev-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  node_modules:
+
+networks:
+  dev-network:
+    driver: bridge
